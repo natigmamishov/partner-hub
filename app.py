@@ -3,6 +3,13 @@ import pandas as pd
 import streamlit as st
 
 
+def render_markup(body, unsafe_allow_html=False):
+    if unsafe_allow_html:
+        # Indented lines after blank lines become Markdown code blocks.
+        body = "\n".join(line.lstrip() for line in body.splitlines())
+    return st.markdown(body, unsafe_allow_html=unsafe_allow_html)
+
+
 # =========================================================
 # PAGE CONFIG
 # =========================================================
@@ -54,7 +61,7 @@ if "presentation" not in st.session_state:
 # =========================================================
 # GLOBAL CSS
 # =========================================================
-st.markdown(
+render_markup(
     """
     <style>
 
@@ -383,6 +390,17 @@ st.markdown(
     }
 
 
+    [data-testid="stMetricValue"],
+    [data-testid="stMetricValue"] * {
+        color: #ffffff !important;
+    }
+
+    [data-testid="stMetricLabel"],
+    [data-testid="stMetricLabel"] * {
+        color: #dbe4ee !important;
+    }
+
+
     /* ===========================
        INPUTS
     =========================== */
@@ -536,7 +554,7 @@ st.markdown(
 
 with st.sidebar:
 
-    st.markdown(
+    render_markup(
         """
         ## 🤝 Partner Hub
         """
@@ -579,7 +597,7 @@ presentation_mode = st.session_state.presentation
 
 if presentation_mode:
 
-    st.markdown(
+    render_markup(
         """
         <style>
 
@@ -666,7 +684,7 @@ if presentation_mode:
 # HERO
 # =========================================================
 
-st.markdown(
+render_markup(
     """
     <div class="hero">
 
@@ -689,7 +707,7 @@ st.markdown(
 
 if page == "🏠 Ana səhifə":
 
-    st.markdown(
+    render_markup(
         '<div class="section-title">Ümumi baxış</div>',
         unsafe_allow_html=True
     )
@@ -723,7 +741,7 @@ if page == "🏠 Ana səhifə":
     with col3:
 
         country_count = (
-            df["country"].nunique()
+            df.loc[df["country"].astype(str).str.strip().ne(""), "country"].nunique()
             if not df.empty
             else 0
         )
@@ -734,7 +752,7 @@ if page == "🏠 Ana səhifə":
         )
 
 
-    st.markdown(
+    render_markup(
         '<div class="section-title">Kateqoriyalar</div>',
         unsafe_allow_html=True
     )
@@ -787,7 +805,7 @@ if page == "🏠 Ana səhifə":
 
             with cols[i % 3]:
 
-                st.markdown(
+                render_markup(
                     f"""
                     <div class="category-card">
 
@@ -823,7 +841,7 @@ elif page == "🤝 Partnyorlar":
     if presentation_mode:
 
 
-        st.markdown(
+        render_markup(
             '<div class="section-title">Partnyor təqdimatı</div>',
             unsafe_allow_html=True
         )
@@ -885,7 +903,7 @@ elif page == "🤝 Partnyorlar":
             )
 
 
-            st.markdown(
+            render_markup(
                 f"""
                 <div class="presentation-card">
 
@@ -957,7 +975,7 @@ elif page == "🤝 Partnyorlar":
     else:
 
 
-        st.markdown(
+        render_markup(
             '<div class="section-title">Partnyorlarım</div>',
             unsafe_allow_html=True
         )
@@ -1054,7 +1072,7 @@ elif page == "🤝 Partnyorlar":
             )
 
 
-            st.markdown(
+            render_markup(
                 f"""
                 <div class="partner-card">
 
@@ -1130,7 +1148,7 @@ elif page == "🤝 Partnyorlar":
 
 elif page == "📦 Məhsullar":
 
-    st.markdown(
+    render_markup(
         '<div class="section-title">📦 Məhsullar</div>',
         unsafe_allow_html=True
     )
@@ -1148,7 +1166,7 @@ elif page == "📦 Məhsullar":
 
 elif page == "⚖️ Müqayisə":
 
-    st.markdown(
+    render_markup(
         '<div class="section-title">⚖️ Məhsul müqayisəsi</div>',
         unsafe_allow_html=True
     )
@@ -1166,7 +1184,7 @@ elif page == "⚖️ Müqayisə":
 
 elif page == "📜 Sertifikatlar":
 
-    st.markdown(
+    render_markup(
         '<div class="section-title">📜 Sertifikatlar</div>',
         unsafe_allow_html=True
     )
